@@ -10,13 +10,4 @@ player.on('timeupdate', throttle(function (currentTime) {
 
 
 let savedTime = localStorage.getItem("videoplayer-current-time");
-if (savedTime) {
-    player.getDuration().then((duration) => {
-        if (savedTime >= 0 && savedTime < duration) {
-            player.setCurrentTime(savedTime);
-        } else {
-            localStorage.removeItem("videoplayer-current-time");
-        }
-    })
-}
-
+player.setCurrentTime(savedTime ? savedTime : 0);

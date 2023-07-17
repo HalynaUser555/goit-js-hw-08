@@ -1,18 +1,20 @@
 import throttle from "lodash.throttle";
 
-saveFormState('input[name="email"]', 'email');
-saveFormState('textarea[name="message"]', 'message');
+const emailInput = document.querySelector('input[name="email"]');
+const messageInput = document.querySelector('textarea[name="message"]');
 
-function saveFormState(selector, key) {
-    const messageInput = document.querySelector(selector);
-    messageInput.addEventListener('input', throttle(function (name) {
+saveFormState(emailInput, 'email');
+saveFormState(messageInput, 'message');
+
+function saveFormState(input, key) {
+    input.addEventListener('input', throttle(function (name) {
         let formState = localStorage.getItem('feedback-form-state');
         if (formState === null) {
             formState = {};
         } else {
             formState = JSON.parse(formState);
         }
-        formState[key] = messageInput.value;
+        formState[key] = input.value;
         localStorage.setItem('feedback-form-state', JSON.stringify(formState));
     }, 500));
 }
@@ -32,12 +34,13 @@ function restoreFormState(formState, selector, key) {
 }
 
 const submitButton = document.querySelector('button[type="submit"]');
-submitButton.addEventListener('click', function (name) {
-    const emailInput = document.querySelector('input[name="email"]');
-    const messageInput = document.querySelector('textarea[name="message"]');
-    if (emailInput.checkValidity() && messageInput.checkValidity()) {
+submitButton.addEventListener('click', function (event) {
+    event.preventDefault();
+    if (emailInput.value === '' || messageInput.value === '') {
+        alert('Please provide information for all fields!');
+    } else {
         localStorage.removeItem('feedback-form-state');
-        emailInput.value = "";
-        messageInput.value = "";
+        emailInput.value = '';
+        messageInput.value = '';
     }
 });
